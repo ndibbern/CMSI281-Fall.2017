@@ -1,8 +1,14 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+/**
+ *
+ */
 public class YarnTests {
 
+    /**
+     *
+     */
     @Test
     public void testYarn() {
         Yarn ball = new Yarn();

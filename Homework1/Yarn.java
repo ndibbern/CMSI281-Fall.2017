@@ -33,19 +33,37 @@ public class Yarn implements YarnInterface {
     // Methods
     // -----------------------------------------------------------
     public boolean isEmpty () {
-        throw new UnsupportedOperationException();
+        return uniqueSize == 0;
     }
 
     public int getSize () {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     public int getUniqueSize () {
-        throw new UnsupportedOperationException();
+        return uniqueSize;
     }
 
+    /**
+     * @param toAdd String to be added to the Yarn.
+     * @return true if successful insertion, false if Yarn is at capacity (already at 100 unique Strings).
+     */
+
     public boolean insert (String toAdd) {
-        throw new UnsupportedOperationException();
+        if (uniqueSize < MAX_SIZE) {
+            if (findIndex(toAdd) == -1) {
+                items[uniqueSize] = new Strand(toAdd, 1);
+                uniqueSize++;
+                size++;
+                return true;
+            } else {
+                items[findIndex(toAdd)].count++;
+                size++;
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
 
     public int remove (String toRemove) {
@@ -61,7 +79,7 @@ public class Yarn implements YarnInterface {
     }
 
     public boolean contains (String toCheck) {
-        throw new UnsupportedOperationException();
+        return findIndex(toCheck) != -1;
     }
 
     public String getNth (int n) {
@@ -101,7 +119,16 @@ public class Yarn implements YarnInterface {
     // -----------------------------------------------------------
     // Private helper methods
     // -----------------------------------------------------------
-    // Add your own here!
+    /*finds the current index of the Entry with text "toFind"
+    * returns -1 if not found*/
+    private int findIndex(String toFind) {
+        for (int i = 0; i < uniqueSize; i++){
+            if (items[i].text.equals(toFind)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 }
 
