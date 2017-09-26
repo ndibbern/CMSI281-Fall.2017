@@ -82,7 +82,15 @@ public class Yarn implements YarnInterface {
 
 
     public void removeAll (String toNuke) {
-        throw new UnsupportedOperationException();
+        int idx = findIndex(toNuke);
+        if (idx == -1) { return; }
+
+        int toNukeCount = items[idx].count;
+        swap(idx, uniqueSize);
+        items[uniqueSize] = null;
+        uniqueSize--;
+        size -= toNukeCount;
+        return;
     }
 
     public int count (String toCount) {
