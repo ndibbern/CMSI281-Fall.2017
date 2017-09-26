@@ -86,7 +86,7 @@ public class Yarn implements YarnInterface {
         if (idx == -1) { return; }
 
         int toNukeCount = items[idx].count;
-        swap(idx, uniqueSize);
+        swapStrand(idx, uniqueSize);
         items[uniqueSize] = null;
         uniqueSize--;
         size -= toNukeCount;
@@ -94,7 +94,11 @@ public class Yarn implements YarnInterface {
     }
 
     public int count (String toCount) {
-        throw new UnsupportedOperationException();
+
+        int idx = findIndex(toCount);
+        if (idx == -1) { return 0;}
+
+        return items[findIndex(toCount)].count;
     }
 
     public boolean contains (String toCheck) {
@@ -149,7 +153,7 @@ public class Yarn implements YarnInterface {
         return -1;
     }
 
-    private void swap (int idx1, int idx2) {
+    private void swapStrand (int idx1, int idx2) {
         if (idx1 > uniqueSize || idx1 < 0 || idx2 > uniqueSize || idx2 < 0 ) {
             return;
         }
