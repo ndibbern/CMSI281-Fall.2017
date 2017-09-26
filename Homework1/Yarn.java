@@ -224,18 +224,7 @@ public class Yarn implements YarnInterface {
         if (y1.getSize() != y2.getSize()) { return false; }
 
         for (int i = 0; i < y1.getUniqueSize(); i++) {
-
-            int toFind = y2.findIndex(y1.items[i].text);
-            if (toFind == -1 ) {
-
-                return false;
-
-            } else {
-                if (y1.items[i].count != y2.items[toFind].count) {
-
-                    return false;
-                }
-            }
+            if (y2.count(y1.items[i].text) != y1.items[i].count ) {return false;}
         }
         return true;
     }
