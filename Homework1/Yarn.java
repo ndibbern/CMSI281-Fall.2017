@@ -67,8 +67,19 @@ public class Yarn implements YarnInterface {
     }
 
     public int remove (String toRemove) {
-        throw new UnsupportedOperationException();
+        int idx = findIndex(toRemove);
+        if (idx != -1) {
+            if(items[idx].count == 1) {
+                removeAll(toRemove);
+            } else {
+                items[idx].count--;
+                size -= 1;
+                return items[idx].count;
+            }
+        }
+        return 0;
     }
+
 
     public void removeAll (String toNuke) {
         throw new UnsupportedOperationException();
@@ -128,6 +139,15 @@ public class Yarn implements YarnInterface {
             }
         }
         return -1;
+    }
+
+    private void swap (int idx1, int idx2) {
+        if (idx1 > uniqueSize || idx1 < 0 || idx2 > uniqueSize || idx2 < 0 ) {
+            return;
+        }
+        Strand save = this.items[idx1];
+        this.items[idx1] = this.items[idx2];
+        this.items[idx2] = save;
     }
 
 }
