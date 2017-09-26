@@ -117,8 +117,19 @@ public class Yarn implements YarnInterface {
     }
 
     public String getMostCommon () {
+        if (isEmpty()) {
+            return "null"; 
+        }
+        int mostCommonIdx = 0;
+        int valueMostCommonCount = items[0].count;
 
-        throw new UnsupportedOperationException();
+        for (int i = 1; i < uniqueSize; i++) {
+            if (items[i].count > valueMostCommonCount ) {
+                mostCommonIdx = i;
+                valueMostCommonCount = items[i].count;
+            }
+        }
+        return items[mostCommonIdx].text;
     }
 
     public void swap (Yarn other) {
