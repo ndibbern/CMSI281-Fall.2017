@@ -39,13 +39,25 @@ public class Yarn implements YarnInterface {
     // -----------------------------------------------------------
     // Methods
     // -----------------------------------------------------------
+    /**
+     * @return true if Yarn is empty
+     */
+
     public boolean isEmpty () {
         return uniqueSize == 0;
     }
 
+    /**
+     * @return size
+     */
+
     public int getSize () {
         return size;
     }
+
+    /**
+     * @return uniqueSize
+     */
 
     public int getUniqueSize () {
         return uniqueSize;
@@ -73,6 +85,11 @@ public class Yarn implements YarnInterface {
         }
     }
 
+    /**
+     * @param toRemove String to be removed from the Yarn (only one occurrance)
+     * @return the number of occurrences remaining after removal, (0 if toRemove does not exist in Yarn)
+     */
+
     public int remove (String toRemove) {
         int idx = findIndex(toRemove);
         if (idx != -1) {
@@ -87,6 +104,9 @@ public class Yarn implements YarnInterface {
         return 0;
     }
 
+    /**
+     * @param toNuke String to be removed from the Yarn (all occurrances)
+     */
 
     public void removeAll (String toNuke) {
         int idx = findIndex(toNuke);
@@ -100,6 +120,11 @@ public class Yarn implements YarnInterface {
         return;
     }
 
+    /**
+     * @param toCount String to which the number of occurrances we want to know
+     * @return the number of occurrences of toCount in Yarn
+     */
+
     public int count (String toCount) {
 
         int idx = findIndex(toCount);
@@ -107,6 +132,11 @@ public class Yarn implements YarnInterface {
 
         return items[findIndex(toCount)].count;
     }
+
+    /**
+     * @param toCheck String to which we want to check its occurrance in the Yarn
+     * @return true if the String toCheck appears at least once inside of the Yarn.
+     */
 
     public boolean contains (String toCheck) {
         return findIndex(toCheck) != -1;
@@ -116,9 +146,15 @@ public class Yarn implements YarnInterface {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @param toCheck String to which we want to check its occurrance in the Yarn
+     * @return the String that occurs most frequently in the Yarn (if it is a tie
+     * return *either* of the most frequent. If the Yarn is empty return null.
+     */
+
     public String getMostCommon () {
         if (isEmpty()) {
-            return "null"; 
+            return "null";
         }
         int mostCommonIdx = 0;
         int valueMostCommonCount = items[0].count;
@@ -131,6 +167,10 @@ public class Yarn implements YarnInterface {
         }
         return items[mostCommonIdx].text;
     }
+
+    /**
+     * @param other Yarn to swap
+    */
 
     public void swap (Yarn other) {
 
