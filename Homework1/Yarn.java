@@ -27,6 +27,13 @@ public class Yarn implements YarnInterface {
 
     Yarn (Yarn other) {
 
+        this.items = new Strand[MAX_SIZE];
+        for (int i = 0; i < other.getUniqueSize(); i++) {
+            this.items[i] = other.items[i];
+        }
+        this.size = other.getSize();
+        this.uniqueSize = other.getUniqueSize();
+
     }
 
     // -----------------------------------------------------------
@@ -96,7 +103,7 @@ public class Yarn implements YarnInterface {
     public int count (String toCount) {
 
         int idx = findIndex(toCount);
-        if (idx == -1) { return 0;}
+        if (idx == -1) { return 0; }
 
         return items[findIndex(toCount)].count;
     }
@@ -110,11 +117,22 @@ public class Yarn implements YarnInterface {
     }
 
     public String getMostCommon () {
+
         throw new UnsupportedOperationException();
     }
 
     public void swap (Yarn other) {
-        throw new UnsupportedOperationException();
+
+        Yarn tempYarn = new Yarn(other);
+
+        other.items = this.items;
+        other.size = this.size;
+        other.uniqueSize = uniqueSize;
+
+        this.size = tempYarn.getSize();
+        this.uniqueSize = tempYarn.getUniqueSize();
+        this.items = tempYarn.items;
+        return;
     }
 
     public String toString () {
