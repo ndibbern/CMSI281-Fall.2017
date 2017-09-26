@@ -142,6 +142,7 @@ public class Yarn implements YarnInterface {
         return findIndex(toCheck) != -1;
     }
 
+    //TODO
     public String getNth (int n) {
         throw new UnsupportedOperationException();
     }
@@ -186,8 +187,17 @@ public class Yarn implements YarnInterface {
         return;
     }
 
+
+    @Override
     public String toString () {
-        throw new UnsupportedOperationException();
+        String toPrint = "{ ";
+        for(int i = 0; i < uniqueSize; i ++){
+            toPrint += items[i].text;
+            toPrint += ": ";
+            toPrint += items[i].count;
+            toPrint += " ";
+        }
+        return toPrint + "}";
     }
 
 
@@ -203,8 +213,31 @@ public class Yarn implements YarnInterface {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @param y1,y2 two Yarns
+     * @return true if y1 and y2 contain the exact same unique Strings and String occurrences
+     */
+
     public static boolean sameYarn (Yarn y1, Yarn y2) {
-        throw new UnsupportedOperationException();
+
+        if (y1.getUniqueSize() != y2.getUniqueSize()) { return false; }
+        if (y1.getSize() != y2.getSize()) { return false; }
+
+        for (int i = 0; i < y1.getUniqueSize(); i++) {
+
+            int toFind = y2.findIndex(y1.items[i].text);
+            if (toFind == -1 ) {
+
+                return false;
+
+            } else {
+                if (y1.items[i].count != y2.items[toFind].count) {
+
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
