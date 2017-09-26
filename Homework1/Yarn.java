@@ -191,13 +191,16 @@ public class Yarn implements YarnInterface {
     @Override
     public String toString () {
         String toPrint = "{ ";
-        for(int i = 0; i < uniqueSize; i ++){
+        for (int i = 0; i < uniqueSize ; i ++) {
+            toPrint += "\"";
             toPrint += items[i].text;
-            toPrint += ": ";
+            toPrint += "\": ";
             toPrint += items[i].count;
-            toPrint += " ";
+            if (i != uniqueSize - 1) {
+                toPrint += ", ";
+            }
         }
-        return toPrint + "}";
+        return toPrint + " }";
     }
 
 
