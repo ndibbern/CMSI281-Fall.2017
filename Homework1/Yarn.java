@@ -267,15 +267,6 @@ public class Yarn implements YarnInterface {
         return -1;
     }
 
-    private void swapStrand (int idx1, int idx2) {
-        if (idx1 > uniqueSize || idx1 < 0 || idx2 > uniqueSize || idx2 < 0 ) {
-            return;
-        }
-        Strand save = this.items[idx1];
-        this.items[idx1] = this.items[idx2];
-        this.items[idx2] = save;
-    }
-
 }
 
 class Strand {
