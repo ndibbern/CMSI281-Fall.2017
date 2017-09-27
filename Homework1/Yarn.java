@@ -143,18 +143,21 @@ public class Yarn implements YarnInterface {
     }
 
     //TODO
-    public String getNth (int n) {
-        int sum = 0;
-        int result = 0;
+    public String getNth(int n) {
+       if (n < size) {
+           int index = 0;
+           for(int i = 0; i <= n + 1; i ++){
+               if (index <= n) {
+                   index += items[i].count;
+               } else {
+                   return items[i-1].text;
+               }
+           }
 
-        while (sum < n ) {
-            for (int i = 0; i < uniqueSize; i++) {
-                sum += items[i].count;
-                result = i;
-            }
-        }
-        return items[result].text;
-    }
+       }
+       throw new IndexOutOfBoundsException();
+   }
+
 
     /**
      * @param toCheck String to which we want to check its occurrance in the Yarn
@@ -219,14 +222,18 @@ public class Yarn implements YarnInterface {
 
     public static Yarn knit (Yarn y1, Yarn y2) {
         Yarn sum = new Yarn(y1);
-        for( int i = 0; i < y2.getSize(); i ++){
+        for( int i = 0; i < y2.getSize(); i++){
             sum.insert(y2.getNth(i));
         }
         return sum;
     }
 
     public static Yarn tear (Yarn y1, Yarn y2) {
-        throw new UnsupportedOperationException();
+        Yarn diff = new Yarn(y1);
+        for( int i = 0; i < y2.getSize(); i++){
+            diff.remove(y2.getNth(i));
+        }
+        return diff;
     }
 
     /**
