@@ -109,16 +109,17 @@ public class Yarn implements YarnInterface {
      * @param toNuke String to be removed from the Yarn (all occurrances)
      */
 
-    public void removeAll (String toNuke) {
+     public void removeAll (String toNuke) {
+         int idx = findIndex(toNuke);
+         if (idx == -1) { return; }
 
-        int index = findIndex(toNuke);
-        if (index != -1) {
-            size -= items[index].count;
-            items[index] = items[uniqueSize - 1];
-            uniqueSize--;
-        }
-
-    }
+         int toNukeCount = items[idx].count;
+         swapStrand(idx, uniqueSize - 1);
+         items[uniqueSize] = null;
+         uniqueSize--;
+         size -= toNukeCount;
+         return;
+     }
 
     /**
      * @param toCount String to which the number of occurrances we want to know
@@ -266,6 +267,15 @@ public class Yarn implements YarnInterface {
         }
         return -1;
     }
+
+    private void swapStrand (int idx1, int idx2) {
+    if (idx1 > uniqueSize || idx1 < 0 || idx2 > uniqueSize || idx2 < 0 ) {
+        return;
+    }
+    Strand save = this.items[idx1];
+    this.items[idx1] = this.items[idx2];
+    this.items[idx2] = save;
+}
 
 }
 
