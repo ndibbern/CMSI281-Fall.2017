@@ -29,7 +29,8 @@ public class Yarn implements YarnInterface {
 
         this.items = new Strand[MAX_SIZE];
         for (int i = 0; i < other.getUniqueSize(); i++) {
-            this.items[i] = other.items[i];
+
+            this.items[i] = new Strand (other.items[i].text, other.items[i].count);
         }
         this.size = other.getSize();
         this.uniqueSize = other.getUniqueSize();
@@ -109,15 +110,14 @@ public class Yarn implements YarnInterface {
      */
 
     public void removeAll (String toNuke) {
-        int idx = findIndex(toNuke);
-        if (idx == -1) { return; }
 
-        int toNukeCount = items[idx].count;
-        swapStrand(idx, uniqueSize);
-        items[uniqueSize] = null;
-        uniqueSize--;
-        size -= toNukeCount;
-        return;
+        int index = findIndex(toNuke);
+        if (index != -1) {
+            size -= items[index].count;
+            items[index] = items[uniqueSize - 1];
+            uniqueSize--;
+        }
+
     }
 
     /**
@@ -150,7 +150,7 @@ public class Yarn implements YarnInterface {
                if (index <= n) {
                    index += items[i].count;
                } else {
-                   return items[i-1].text;
+                   return items[i - 1].text;
                }
            }
 
