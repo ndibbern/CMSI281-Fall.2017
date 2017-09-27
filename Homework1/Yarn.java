@@ -144,7 +144,16 @@ public class Yarn implements YarnInterface {
 
     //TODO
     public String getNth (int n) {
-        throw new UnsupportedOperationException();
+        int sum = 0;
+        int result = 0;
+
+        while (sum < n ) {
+            for (int i = 0; i < uniqueSize; i++) {
+                sum += items[i].count;
+                result = i;
+            }
+        }
+        return items[result].text;
     }
 
     /**
@@ -209,7 +218,11 @@ public class Yarn implements YarnInterface {
     // -----------------------------------------------------------
 
     public static Yarn knit (Yarn y1, Yarn y2) {
-        throw new UnsupportedOperationException();
+        Yarn sum = new Yarn(y1);
+        for( int i = 0; i < y2.getSize(); i ++){
+            sum.insert(y2.getNth(i));
+        }
+        return sum;
     }
 
     public static Yarn tear (Yarn y1, Yarn y2) {
