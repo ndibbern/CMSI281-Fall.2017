@@ -449,7 +449,7 @@ public class YarnTests {
         assertFalse(Yarn.sameYarn(nati, nati2));
         assertFalse(Yarn.sameYarn(nati2, nati));
         assertTrue(Yarn.sameYarn(knitted, knitted2));
-        
+
     }
 
 }

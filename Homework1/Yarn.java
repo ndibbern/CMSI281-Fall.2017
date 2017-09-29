@@ -143,7 +143,10 @@ public class Yarn implements YarnInterface {
         return findIndex(toCheck) != -1;
     }
 
-    //TODO
+    /**
+     * @param n integer position to find in yarn
+     * @return the text found at position n
+     */
     public String getNth(int n) {
        if (n < size) {
            int index = 0;
@@ -161,7 +164,6 @@ public class Yarn implements YarnInterface {
 
 
     /**
-     * @param toCheck String to which we want to check its occurrance in the Yarn
      * @return the String that occurs most frequently in the Yarn (if it is a tie
      * return *either* of the most frequent. If the Yarn is empty return null.
      */
@@ -221,6 +223,11 @@ public class Yarn implements YarnInterface {
     // Static methods
     // -----------------------------------------------------------
 
+    /**
+     * @param y1,y2 Yarns that you want to knit (put together into one yarn)
+     * @return knitted Yarn (y1 together with y2)
+     */
+
     public static Yarn knit (Yarn y1, Yarn y2) {
         Yarn sum = new Yarn(y1);
         for( int i = 0; i < y2.getSize(); i++){
@@ -228,6 +235,11 @@ public class Yarn implements YarnInterface {
         }
         return sum;
     }
+
+    /**
+     * @param y1,y2 Yarns that you want to tear (put y1 together with y2 except for elements of y2 that are in y1 alredy)
+     * @return teared Yarn
+     */
 
     public static Yarn tear (Yarn y1, Yarn y2) {
         Yarn diff = new Yarn(y1);
