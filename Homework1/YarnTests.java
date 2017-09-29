@@ -3,10 +3,31 @@ import org.junit.Test;
 
 public class YarnTests {
 
+    String[] strings = {
+            "corgi",
+            "dalmata",
+            "labrador",
+            "golden",
+            "maltes",
+            "perritos",
+            "lindos",
+            "nati",
+            "vic",
+            "cachorros",
+            "pug",
+            "samoyed",
+            "boston",
+            "terrier",
+            "chihuahua",
+            "chichito",
+            "fran",
+            "amoroso",
+            "fede",
+            "ale"};
+
+
     @Test
-    public void testYarn() {
-        Yarn ball = new Yarn();
-    }
+    public void testYarn() { Yarn ball = new Yarn(); }
 
     @Test
     public void testIsEmpty() {
@@ -14,6 +35,29 @@ public class YarnTests {
         assertTrue(ball.isEmpty());
         ball.insert("not_empty");
         assertFalse(ball.isEmpty());
+
+        //CODE
+
+        ball = new Yarn();
+        for(int i = 0; i < 10; i ++) {
+            ball.insert(strings[i]);
+        }
+        assertFalse(ball.isEmpty());
+
+        for(int i = 0; i < 10; i ++) {
+            ball.remove(strings[i]);
+        }
+        assertTrue(ball.isEmpty());
+
+        for(int i = 0; i < 150; i++){
+            ball.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        assertFalse(ball.isEmpty());
+
+        for(int i = 0; i < strings.length; i ++){
+            ball.removeAll(strings[i]);
+        }
+        assertTrue(ball.isEmpty());
     }
 
     @Test
@@ -24,6 +68,19 @@ public class YarnTests {
         assertEquals(2, ball.getSize());
         ball.insert("unique");
         assertEquals(3, ball.getSize());
+
+        //My test
+        ball = new Yarn();
+        for (int i = 0; i < 10; i ++) {
+            ball.insert(strings[i]);
+        }
+        assertEquals(ball.getSize(), 10);
+
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 150; i++) {
+            nati.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        assertEquals(nati.getSize(), 150);
     }
 
     @Test
@@ -34,6 +91,13 @@ public class YarnTests {
         assertEquals(1, ball.getUniqueSize());
         ball.insert("unique");
         assertEquals(2, ball.getUniqueSize());
+
+        //My test
+        Yarn nati = new Yarn();
+        for(int i = 0; i < 150; i++){
+            nati.insert(strings[0]);
+        }
+        assertEquals(nati.getUniqueSize(), 1);
     }
 
     @Test
@@ -44,6 +108,13 @@ public class YarnTests {
         ball.insert("unique");
         assertTrue(ball.contains("dup"));
         assertTrue(ball.contains("unique"));
+
+        //My test
+        Yarn nati = new Yarn();
+        for(int i = 0; i < 100; i ++){
+            assertTrue(nati.insert(strings[0]));
+        }
+        assertTrue(nati.contains(strings[0]));
     }
 
     @Test
@@ -56,6 +127,28 @@ public class YarnTests {
         ball.remove("dup");
         assertEquals(1, ball.getSize());
         assertEquals(1, ball.getUniqueSize());
+
+        // My tests
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 10; i ++) {
+            nati.insert(strings[i]);
+        }
+        for (int i = 0; i < 10; i ++) {
+            nati.remove(strings[i]);
+        }
+        for (int i = 0; i < 10; i ++) {
+            assertFalse(nati.contains(strings[i]));
+        }
+        nati = new Yarn();
+        for (int i = 0; i < 150; i++) {
+            nati.insert(strings[i%20]);
+        }
+        for(int i = 0; i < 20; i ++) {
+            nati.remove(strings[i]);
+        }
+        for(int i = 0; i < 20; i ++) {
+            assertTrue(nati.contains(strings[i]));
+        }
     }
 
     @Test
@@ -69,6 +162,28 @@ public class YarnTests {
         ball.removeAll("dup");
         assertEquals(1, ball.getSize());
         assertEquals(1, ball.getUniqueSize());
+
+        // My tests
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 10; i ++) {
+            nati.insert(strings[i]);
+        }
+        for (int i = 0; i < 10; i ++) {
+            nati.removeAll(strings[i]);
+        }
+        for (int i = 0; i < 10; i ++) {
+            assertFalse(nati.contains(strings[i]));
+        }
+        nati = new Yarn();
+        for (int i = 0; i < 150; i++) {
+            nati.insert(strings[i%20]);
+        }
+        for(int i = 0; i < 20; i ++) {
+            nati.removeAll(strings[i]);
+        }
+        for(int i = 0; i < 20; i ++) {
+            assertFalse(nati.contains(strings[i]));
+        }
     }
 
     @Test
@@ -80,6 +195,16 @@ public class YarnTests {
         assertEquals(2, ball.count("dup"));
         assertEquals(1, ball.count("unique"));
         assertEquals(0, ball.count("forneymon"));
+
+        //My test
+
+        Yarn nati= new Yarn();
+        for (int i = 0; i < 100; i++) {
+            nati.insert(strings[i%20]);
+        }
+        for (int i = 0; i < 20; i ++) {
+            assertTrue(nati.count(strings[i]) == 5);
+        }
     }
 
     @Test
@@ -91,6 +216,15 @@ public class YarnTests {
         assertTrue(ball.contains("dup"));
         assertTrue(ball.contains("unique"));
         assertFalse(ball.contains("forneymon"));
+
+        //My test
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 100; i++){
+            nati.insert(strings[i%20]);
+        }
+        for (int i = 0; i < 20; i ++) {
+            assertTrue(nati.contains(strings[i]));
+        }
     }
 
     @Test
@@ -104,6 +238,17 @@ public class YarnTests {
         assertEquals(1, dolly.count("unique"));
         dolly.insert("cool");
         assertFalse(ball.contains("cool"));
+
+        //My test
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 20; i ++) {
+            nati.insert(strings[i]);
+        }
+
+        Yarn natiCopy = new Yarn(nati);
+        natiCopy.remove(strings[0]);
+        assertTrue(nati.contains(strings[0]));
+        assertFalse(natiCopy.contains(strings[0]));
     }
 
     @Test
@@ -119,6 +264,19 @@ public class YarnTests {
             assertTrue(comparison.contains(gotten));
             comparison.remove(gotten);
         }
+
+        //My test
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 100; i ++) {
+            nati.insert(strings[i % 20]);
+        }
+        for(int i = 0; i < 20; i ++) {
+            int count = 0;
+            for (int j = 0; j < 100; j++) {
+                count += nati.getNth(j) == strings[i] ? 1 : 0;
+            }
+            assertTrue(count == 5);
+        }
     }
 
     @Test
@@ -132,6 +290,14 @@ public class YarnTests {
         ball.insert("cool");
         String mc = ball.getMostCommon();
         assertTrue(mc.equals("dup") || mc.equals("cool"));
+
+        //My test
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 20; i ++) {
+            nati.insert(strings[i]);
+        }
+        nati.insert(strings[0]);
+        assertTrue(nati.getMostCommon().equals(strings[0]));
     }
 
     @Test
@@ -149,6 +315,21 @@ public class YarnTests {
         assertTrue(y2.contains("dup"));
         assertTrue(y2.contains("unique"));
         assertFalse(y1.contains("dup"));
+
+
+        // My test
+        Yarn nati = new Yarn();
+        for (int i = 0; i < 20; i ++) {
+            nati.insert(strings[i]);
+        }
+
+        Yarn natiEmpty = new Yarn();
+        nati.swap(natiEmpty);
+        assertTrue(nati.isEmpty());
+        for (int i = 0; i < 20; i ++) {
+            assertTrue(natiEmpty.contains(strings[i]));
+        }
+
     }
 
     @Test
@@ -161,6 +342,16 @@ public class YarnTests {
         y1.insert("dup");
         assertTrue(y1.toString().equals("{ \"unique\": 1, \"dup\": 2 }") ||
                    y1.toString().equals("{ \"dup\": 2, \"unique\": 1 }"));
+
+        //My test
+        Yarn nati = new Yarn();
+        assertTrue(nati.toString().equals("{  }"));
+
+        for (int i = 0; i < 2; i ++) {
+            nati.insert(strings[i]);
+        }
+        assertTrue(nati.toString().equals("{ \"corgi\": 1, \"dalmata\": 1 }") ||
+                nati.toString().equals("{ \"dalmata\": 1, \"corgi\": 1 }"));
     }
 
     @Test
@@ -179,6 +370,21 @@ public class YarnTests {
         y3.insert("test");
         assertFalse(y1.contains("test"));
         assertFalse(y2.contains("test"));
+
+        //My test
+        Yarn nati = new Yarn();
+        Yarn nati2 = new Yarn();
+        for(int i = 0; i < 40; i ++){
+            nati.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        for(int i = 0; i < 40; i ++){
+            nati2.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        Yarn knitted = Yarn.knit(nati, nati2);
+        assertEquals(knitted.getSize(), nati.getSize() + nati2.getSize());
+        for(String string: strings){
+            assertEquals(knitted.count(string), nati.count(string) + nati2.count(string));
+        }
     }
 
     @Test
@@ -197,6 +403,20 @@ public class YarnTests {
         y3.insert("test");
         assertFalse(y1.contains("test"));
         assertFalse(y2.contains("test"));
+
+        //My test
+        Yarn nati = new Yarn();
+        Yarn nati2 = new Yarn();
+        for(int i = 0; i < 100; i ++){
+            nati.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        for(int i = 0; i < 100; i ++){
+            nati2.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        Yarn teared = Yarn.tear(nati, nati2);
+        for(String string: strings) {
+            assertEquals(teared.count(string), nati.count(string) - nati2.count(string) > 0 ? nati.count(string) - nati2.count(string) : 0);
+        }
     }
 
     @Test
@@ -213,6 +433,23 @@ public class YarnTests {
         assertTrue(Yarn.sameYarn(y2, y1));
         y2.insert("test");
         assertFalse(Yarn.sameYarn(y1, y2));
+
+
+        // My test
+        Yarn nati = new Yarn();
+        Yarn nati2 = new Yarn();
+        for (int i = 0; i < 40; i ++) {
+            nati.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        for(int i = 0; i < 30; i ++){
+            nati2.insert(strings[(int) (Math.random()*strings.length)]);
+        }
+        Yarn knitted = Yarn.knit(nati, nati2);
+        Yarn knitted2 = Yarn.knit(nati2, nati);
+        assertFalse(Yarn.sameYarn(nati, nati2));
+        assertFalse(Yarn.sameYarn(nati2, nati));
+        assertTrue(Yarn.sameYarn(knitted, knitted2));
+        
     }
 
 }
