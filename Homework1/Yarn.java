@@ -1,5 +1,3 @@
-import javax.naming.OperationNotSupportedException;
-
 /**
  *  A Yarn is an unordered collection of Strings in which duplicates are allowed.
  *  A Yarn maps Strings to the number of occurrences of each String in the Yarn.
@@ -150,7 +148,7 @@ public class Yarn implements YarnInterface {
     public String getNth(int n) {
        if (n < size) {
            int index = 0;
-           for(int i = 0; i <= n + 1; i ++){
+           for (int i = 0; i <= n + 1; i ++) {
                if (index <= n) {
                    index += items[i].count;
                } else {
@@ -229,11 +227,11 @@ public class Yarn implements YarnInterface {
      */
 
     public static Yarn knit (Yarn y1, Yarn y2) {
-        Yarn sum = new Yarn(y1);
+        Yarn knitted = new Yarn(y1);
         for( int i = 0; i < y2.getSize(); i++){
-            sum.insert(y2.getNth(i));
+            knitted.insert(y2.getNth(i));
         }
-        return sum;
+        return knitted;
     }
 
     /**
