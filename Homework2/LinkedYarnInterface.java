@@ -1,5 +1,3 @@
-package linked_yarn;
-
 public interface LinkedYarnInterface {
 
     boolean isEmpty ();
@@ -13,5 +11,5 @@ public interface LinkedYarnInterface {
     String getMostCommon ();
     void swap (LinkedYarn other);
     LinkedYarn.Iterator getIterator ();
-    
+
 }

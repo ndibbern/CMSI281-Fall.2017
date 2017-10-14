@@ -1,5 +1,3 @@
-package linked_yarn;
-
 public interface LinkedYarnIteratorInterface {
 
     boolean isValid ();
