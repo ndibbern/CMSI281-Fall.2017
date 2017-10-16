@@ -40,7 +40,20 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public void insert (String toAdd) {
-        throw new UnsupportedOperationException();
+        if (this.contains(toAdd)) {
+            find(toAdd).count ++;
+            size ++;
+        } else {
+            Node toInsert = new Node(toAdd, 1);
+            toInsert.next = head;
+            toInsert.prev = null;
+            if(head != null) { head.prev = toInsert; }
+            this.head = toInsert;
+            size ++;
+            uniqueSize ++;
+        }
+
+        modCount ++;
     }
 
     public int remove (String toRemove) {
@@ -56,7 +69,13 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public boolean contains (String toCheck) {
-        throw new UnsupportedOperationException();
+
+        if ( this.isEmpty() ) { return false; }
+        Iterator iterator = getIterator();
+        while( !iterator.getString().equals(toCheck) && iterator.hasNext() ) {
+            iterator.next();
+        }
+        return iterator.getString().equals(toCheck);
     }
 
     public String getMostCommon () {
@@ -68,7 +87,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public LinkedYarn.Iterator getIterator () {
-        throw new UnsupportedOperationException();
+        return new Iterator(this);
     }
 
 
@@ -93,7 +112,17 @@ public class LinkedYarn implements LinkedYarnInterface {
     // Private helper methods
     // -----------------------------------------------------------
 
-    // You should add some methods here!
+    private Node find(String word){
+        //Returns the Node that contains that text
+        //Or null if it could not find it
+        if (!this.contains(word)) { return null; }
+
+        Iterator iterator = this.getIterator();
+        while (!iterator.getString().equals(word) && iterator.hasNext()) {
+            iterator.next();
+        }
+        return iterator.getString().equals(word) ? iterator.current : null;
+    }
 
 
     // -----------------------------------------------------------
@@ -118,7 +147,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public boolean hasPrev () {
-            return current.prev != null;
+            return current == head;
         }
 
         public boolean isValid () {
@@ -126,15 +155,17 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public String getString () {
-            throw new UnsupportedOperationException();
+            return this.isValid() && !owner.isEmpty() ? current.text : null;
         }
 
         public void next () {
+            if (!this.hasNext()) {return;}
             current = current.next;
         }
 
         public void prev () {
-            throw new UnsupportedOperationException();
+            if (!this.hasPrev()) {return;}
+            current = current.prev;
         }
 
         public void replaceAll (String toReplaceWith) {
