@@ -13,14 +13,25 @@ public class LinkedYarn implements LinkedYarnInterface {
     // Constructors
     // -----------------------------------------------------------
     LinkedYarn () {
-        head = null;
-        size = 0;
-        uniqueSize = 0;
-        modCount = 0;
+        this.head = null;
+        this.size = 0;
+        this.uniqueSize = 0;
+        this.modCount = 0;
     }
 
     LinkedYarn (LinkedYarn other) {
-        // TODO
+        LinkedYarn temporary = new LinkedYarn();
+        Iterator iterator = other.getIterator();
+        while (iterator.hasNext()) {
+            temporary.insert(iterator.getString());
+            iterator.next();
+        }
+
+        temporary.insert(other.head.text);
+        this.head = temporary.head;
+        this.size  = temporary.getSize();
+        this.uniqueSize = temporary.getUniqueSize();
+        this.modCount = temporary.modCount;
     }
 
 
@@ -47,21 +58,38 @@ public class LinkedYarn implements LinkedYarnInterface {
             Node toInsert = new Node(toAdd, 1);
             toInsert.next = head;
             toInsert.prev = null;
-            if(head != null) { head.prev = toInsert; }
+            if (head != null) { head.prev = toInsert; }
             this.head = toInsert;
             size ++;
             uniqueSize ++;
         }
-
         modCount ++;
     }
 
     public int remove (String toRemove) {
-        throw new UnsupportedOperationException();
+        Node nodeToRemoveFrom = find(toRemove);
+        if ( nodeToRemoveFrom == null) { return 0;}
+        if (nodeToRemoveFrom.count == 1) {
+            removeAll(toRemove);
+        } else {
+            size -= 1;
+            nodeToRemoveFrom.count--;
+            return nodeToRemoveFrom.count;
+            }
+        modCount++;
+        return 0;
     }
 
     public void removeAll (String toNuke) {
-        throw new UnsupportedOperationException();
+        Node nodeToNuke = find(toNuke);
+        size -= nodeToNuke.count;
+        if (nodeToNuke == null) {return;}
+        if (nodeToNuke == head) { head = nodeToNuke.next; }
+        if (nodeToNuke.prev != null) {
+            nodeToNuke.prev.next = nodeToNuke.next;
+        }
+        uniqueSize--;
+        modCount++;
     }
 
     public int count (String toCount) {
@@ -112,7 +140,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     // Private helper methods
     // -----------------------------------------------------------
 
-    private Node find(String word){
+    private Node find(String word) {
         //Returns the Node that contains that text
         //Or null if it could not find it
         if (!this.contains(word)) { return null; }
@@ -122,6 +150,24 @@ public class LinkedYarn implements LinkedYarnInterface {
             iterator.next();
         }
         return iterator.getString().equals(word) ? iterator.current : null;
+    }
+
+    @Override
+    public String toString(){
+        if (this.isEmpty()) {
+            return "{ }";
+        } else {
+            Iterator iterator = this.getIterator();
+            String toPrint = "{ ";
+            toPrint += iterator.getString();
+            while (iterator.hasNext()) {
+                iterator.next();
+                toPrint += ", ";
+                toPrint += iterator.getString();
+            }
+            toPrint += " }";
+            return toPrint;
+        }
     }
 
 
