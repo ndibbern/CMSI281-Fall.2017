@@ -93,7 +93,9 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public int count (String toCount) {
-        throw new UnsupportedOperationException();
+        Node nodeToCount = find(toCount);
+        if (nodeToCount == null) { return 0; }
+        return nodeToCount.count;
     }
 
     public boolean contains (String toCheck) {
