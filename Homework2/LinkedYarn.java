@@ -124,7 +124,20 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public void swap (LinkedYarn other) {
-        throw new UnsupportedOperationException();
+        Node tempHead = head;
+        int tempSize = size,
+            tempUniqueSize = uniqueSize,
+            tempModCount = modCount;
+
+        head = other.head;
+        size = other.size;
+        uniqueSize = other.uniqueSize;
+        modCount = other.modCount;
+
+        other.head = tempHead;
+        other.size = tempSize;
+        other.uniqueSize = tempUniqueSize;
+        other.modCount = tempModCount;
     }
 
     public LinkedYarn.Iterator getIterator () {
