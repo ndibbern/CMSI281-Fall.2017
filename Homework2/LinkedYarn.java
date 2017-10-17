@@ -83,28 +83,29 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public void removeAll (String toNuke) {
+        if (!this.contains(toNuke)) { return; }
         Node nodeToNuke = find(toNuke);
         size -= nodeToNuke.count;
+        uniqueSize--;
+        modCount++;
         if (nodeToNuke == null) {return;}
         if (nodeToNuke == head) { head = nodeToNuke.next; }
         if (nodeToNuke.prev != null) {
             nodeToNuke.prev.next = nodeToNuke.next;
         }
-        uniqueSize--;
-        modCount++;
     }
 
     public int count (String toCount) {
-        Node nodeToCount = find(toCount);
-        if (nodeToCount == null) { return 0; }
-        return nodeToCount.count;
+
+        if (!this.contains(toCount)) { return 0; }
+        return find(toCount).count;
     }
 
     public boolean contains (String toCheck) {
 
-        if ( this.isEmpty() ) { return false; }
+        if (this.isEmpty()) { return false; }
         Iterator iterator = getIterator();
-        while( !iterator.getString().equals(toCheck) && iterator.hasNext() ) {
+        while (!iterator.getString().equals(toCheck) && iterator.hasNext()) {
             iterator.next();
         }
         return iterator.getString().equals(toCheck);
@@ -112,17 +113,14 @@ public class LinkedYarn implements LinkedYarnInterface {
 
     public String getMostCommon () {
 
-        String mostCommon = head.text;
-        int higherCount = head.count;
+        if (size == 0) { return null; }
+        Node mostCommon = head;
         Iterator iterator = getIterator();
         while (iterator.hasNext()) {
             iterator.next();
-            if (iterator.current.count > higherCount) {
-                higherCount = iterator.current.count;
-                mostCommon = iterator.getString();
-            }
+            mostCommon = iterator.current.count > mostCommon.count ? iterator.current : mostCommon;
         }
-        return mostCommon;
+        return mostCommon.text;
     }
 
     public void swap (LinkedYarn other) {
@@ -308,6 +306,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public void replaceAll (String toReplaceWith) {
+
             if (isValid()) {
                 current.text = toReplaceWith;
                 itModCount ++;
