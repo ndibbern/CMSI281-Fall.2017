@@ -21,12 +21,12 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     LinkedYarn (LinkedYarn other) {
+
         LinkedYarn temporary = new LinkedYarn();
-        Iterator iterator = other.getIterator();
-        temporary.insert(other.head.text);
-        while (iterator.hasNext()) {
-            iterator.next();
-            temporary.insert(iterator.getString());
+        Node current = other.head;
+        for (int i = 0; i < other.uniqueSize; i++) {
+            temporary.insertNode(current.text, current.count);
+            current = current.next;
         }
         this.head = temporary.head;
         this.size  = temporary.getSize();
@@ -187,6 +187,15 @@ public class LinkedYarn implements LinkedYarnInterface {
         for (int i = 0; i < countNumber; i++) {
             this.remove(text);
         }
+    }
+
+    private void insertNode (String textToAdd, int countToAdd) {
+        Node currentHead = head;
+        head = new Node(textToAdd, countToAdd);
+        head.next = currentHead;
+        size += countToAdd;
+        uniqueSize++;
+        modCount += countToAdd;
     }
 
     @Override
