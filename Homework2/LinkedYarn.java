@@ -137,15 +137,27 @@ public class LinkedYarn implements LinkedYarnInterface {
     // -----------------------------------------------------------
 
     public static LinkedYarn knit (LinkedYarn y1, LinkedYarn y2) {
-        throw new UnsupportedOperationException();
+        LinkedYarn result = new LinkedYarn(y1);
+        Node current = y2.head;
+        for (int i = 0; i < y2.uniqueSize; i++) {
+            result.insertOccurrences(current.text, current.count);
+            current = current.next;
+        }
+        return result;
     }
 
     public static LinkedYarn tear (LinkedYarn y1, LinkedYarn y2) {
-        throw new UnsupportedOperationException();
+        LinkedYarn result = new LinkedYarn(y1);
+        Node current = y2.head;
+        for (int i = 0; i < y2.uniqueSize; i++) {
+            result.removeOccurrences(current.text, current.count);
+            current = current.next;
+        }
+        return result;
     }
 
     public static boolean sameYarn (LinkedYarn y1, LinkedYarn y2) {
-        throw new UnsupportedOperationException();
+        return tear(y1, y2).isEmpty() && tear(y2, y1).isEmpty();
     }
 
 
@@ -163,6 +175,18 @@ public class LinkedYarn implements LinkedYarnInterface {
             iterator.next();
         }
         return iterator.getString().equals(word) ? iterator.current : null;
+    }
+
+    private void insertOccurrences (String text, int countNumber) {
+        for (int i = 0; i < countNumber; i++) {
+            this.insert(text);
+        }
+    }
+
+    private void removeOccurrences (String text, int countNumber) {
+        for (int i = 0; i < countNumber; i++) {
+            this.remove(text);
+        }
     }
 
     @Override
