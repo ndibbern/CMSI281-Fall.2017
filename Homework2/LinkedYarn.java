@@ -51,6 +51,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public void insert (String toAdd) {
+
         if (this.contains(toAdd)) {
             find(toAdd).count ++;
             size ++;
@@ -67,12 +68,13 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public int remove (String toRemove) {
+
         Node nodeToRemoveFrom = find(toRemove);
         if ( nodeToRemoveFrom == null) { return 0;}
         if (nodeToRemoveFrom.count == 1) {
             removeAll(toRemove);
         } else {
-            size -= 1;
+            size --;
             nodeToRemoveFrom.count--;
             return nodeToRemoveFrom.count;
             }
