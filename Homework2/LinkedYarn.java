@@ -13,6 +13,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     // Constructors
     // -----------------------------------------------------------
     LinkedYarn () {
+
         this.head = null;
         this.size = 0;
         this.uniqueSize = 0;
@@ -22,12 +23,11 @@ public class LinkedYarn implements LinkedYarnInterface {
     LinkedYarn (LinkedYarn other) {
         LinkedYarn temporary = new LinkedYarn();
         Iterator iterator = other.getIterator();
-        while (iterator.hasNext()) {
-            temporary.insert(iterator.getString());
-            iterator.next();
-        }
-
         temporary.insert(other.head.text);
+        while (iterator.hasNext()) {
+            iterator.next();
+            temporary.insert(iterator.getString());
+        }
         this.head = temporary.head;
         this.size  = temporary.getSize();
         this.uniqueSize = temporary.getUniqueSize();
@@ -109,7 +109,18 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public String getMostCommon () {
-        throw new UnsupportedOperationException();
+
+        String mostCommon = head.text;
+        int higherCount = head.count;
+        Iterator iterator = getIterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            if (iterator.current.count > higherCount) {
+                higherCount = iterator.current.count;
+                mostCommon = iterator.getString();
+            }
+        }
+        return mostCommon;
     }
 
     public void swap (LinkedYarn other) {
@@ -162,16 +173,19 @@ public class LinkedYarn implements LinkedYarnInterface {
             Iterator iterator = this.getIterator();
             String toPrint = "{ ";
             toPrint += iterator.getString();
+            toPrint += ": ";
+            toPrint += this.count(iterator.getString());
             while (iterator.hasNext()) {
                 iterator.next();
                 toPrint += ", ";
                 toPrint += iterator.getString();
+                toPrint += ": ";
+                toPrint += this.count(iterator.getString());
             }
             toPrint += " }";
             return toPrint;
         }
     }
-
 
     // -----------------------------------------------------------
     // Inner Classes
@@ -181,6 +195,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         LinkedYarn owner;
         Node current;
         int itModCount;
+        //index designates the position inside the node (1 being 1st occurrence)
         private int index;
 
         Iterator (LinkedYarn y) {
@@ -191,11 +206,13 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public boolean hasNext () {
-            return current != null && current.next != null;
+            if (owner.isEmpty()) { return false; }
+            return index < current.count || current.next != null;
         }
 
         public boolean hasPrev () {
-            return current == head;
+            if (owner.isEmpty()) {return false;}
+            return index > 1 || current.prev != null;
         }
 
         public boolean isValid () {
@@ -207,17 +224,49 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public void next () {
-            if (!this.hasNext()) {return;}
-            current = current.next;
+            if (isValid()) {
+                if (hasNext()) {
+                    if (index == current.count) {
+                        if (!this.hasNext()) { throw new NoSuchElementException(); }
+                        current = current.next;
+                        index = 1;
+                    } else {
+                        index++;
+                    }
+                } else {
+                    throw new NoSuchElementException();
+                }
+            } else {
+                throw new IllegalStateException();
+            }
         }
 
         public void prev () {
-            if (!this.hasPrev()) {return;}
-            current = current.prev;
+            if (isValid()) {
+                if (hasPrev()) {
+                    if (index == 1) {
+                        if (!this.hasPrev()) { throw new NoSuchElementException(); } //might need to do and if its not empty
+                        current = current.prev;
+                        index = current.count;
+                    } else {
+                        index --;
+                    }
+                } else {
+                    throw new NoSuchElementException();
+                }
+            } else {
+                throw new IllegalStateException();
+            }
         }
 
         public void replaceAll (String toReplaceWith) {
-            throw new UnsupportedOperationException();
+            if (isValid()) {
+                current.text = toReplaceWith;
+                itModCount ++;
+                owner.modCount ++;
+            } else {
+                throw new IllegalStateException();
+            }
         }
 
     }
