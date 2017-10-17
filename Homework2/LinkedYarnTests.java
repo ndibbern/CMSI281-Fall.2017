@@ -1,31 +1,14 @@
 import static org.junit.Assert.*;
 
+import javafx.concurrent.Worker;
+import javafx.scene.input.InputMethodTextRun;
 import org.junit.*;
 import org.junit.rules.Timeout;
+import sun.awt.image.ImageWatched;
+
+import javax.print.DocFlavor;
 
 public class LinkedYarnTests {
-
-    String[] strings = {
-            "corgi",
-            "dalmata",
-            "labrador",
-            "golden",
-            "maltes",
-            "perritos",
-            "lindos",
-            "nati",
-            "vic",
-            "cachorros",
-            "pug",
-            "samoyed",
-            "boston",
-            "terrier",
-            "chihuahua",
-            "chichito",
-            "fran",
-            "amoroso",
-            "fede",
-            "ale"};
 
     // =================================================
     // Test Configuration
@@ -39,9 +22,35 @@ public class LinkedYarnTests {
     // Used as the basic empty LinkedYarn to test; the @Before
     // method is run before every @Test
     LinkedYarn ball;
+    LinkedYarn bola;
+    int repetitions = 100;
+    String[] words = {
+            "Ohrwurm",
+            "Fernweh",
+            "Kummerspeck",
+            "Schweinehund",
+            "Fremdschämen",
+            "Torschlusspanik",
+            "Treppenwitz",
+            "Lebensmüde",
+            "Weltschmerz",
+            "Weichei",
+            "Backpfeifengesicht",
+            "Erklärungsnot",
+            "Sitzfleisch",
+            "Purzelbaum",
+            "Dreikäsehoch",
+            "Zungenbrecher",
+            "Schattenparker",
+            "Kuddelmuddel",
+            "Kugelschreiber",
+            "Kartoffelpuffer"
+    };
+
     @Before
     public void init () {
         ball = new LinkedYarn();
+        bola = new LinkedYarn();
     }
 
 
@@ -55,6 +64,14 @@ public class LinkedYarnTests {
     public void testInit() {
         assertTrue(ball.isEmpty());
         assertEquals(0, ball.getSize());
+
+        //MY TESTS
+        assertEquals(0, ball.getUniqueSize());
+        for(String word : words){
+            assertFalse(ball.contains(word));
+            assertEquals(0, ball.count(word));
+            assertTrue(ball.getMostCommon() == null);
+        }
     }
 
     // Basic Tests
@@ -65,30 +82,17 @@ public class LinkedYarnTests {
         ball.insert("not_empty");
         assertFalse(ball.isEmpty());
 
-        //MY CODE
-
-        ball = new LinkedYarn();
-        for(int i = 0; i < 10; i ++) {
-            ball.insert(strings[i]);
-        }
-        assertFalse(ball.isEmpty());
-
-        for(int i = 0; i < 10; i ++) {
-            ball.remove(strings[i]);
-        }
+        //MY TESTS
+        ball.remove("not_empty");
+        assertTrue(ball.isEmpty());
+        ball.insert("not_empty");
+        ball.removeAll("not_empty");
         assertTrue(ball.isEmpty());
 
-        for(int i = 0; i < 150; i++){
-            ball.insert(strings[(int) (Math.random()*strings.length)]);
-        }
-        assertFalse(ball.isEmpty());
-
-        for(int i = 0; i < strings.length; i ++){
-            ball.removeAll(strings[i]);
-        }
-        assertTrue(ball.isEmpty());
-
-
+        LinkedYarn.Iterator iterator = ball.getIterator();
+        assertFalse(iterator.hasNext());
+        assertFalse(iterator.hasPrev());
+        assertEquals(null, iterator.getString());
     }
 
     @Test
@@ -99,18 +103,28 @@ public class LinkedYarnTests {
         ball.insert("unique");
         assertEquals(3, ball.getSize());
 
-        //My test
-        ball = new LinkedYarn();
-        for (int i = 0; i < 10; i ++) {
-            ball.insert(strings[i]);
+        //MY TESTS
+        bola = new LinkedYarn();
+        assertEquals(0, bola.getSize());
+        for(String word : words){
+            bola.insert(word);
         }
-        assertEquals(ball.getSize(), 10);
+        assertEquals(words.length, bola.getSize());
 
-        LinkedYarn nati = new LinkedYarn();
-        for (int i = 0; i < 150; i++) {
-            nati.insert(strings[(int) (Math.random()*strings.length)]);
+        bola = new LinkedYarn();
+        for (int i = 0; i < repetitions; i ++) {
+            for (String word : words) {
+                bola.insert(word);
+            }
         }
-        assertEquals(nati.getSize(), 150);
+        assertEquals(words.length * repetitions, bola.getSize());
+
+        bola = new LinkedYarn();
+        for (int i = 0; i < repetitions; i ++) {
+            bola.insert(words[(int) (Math.random()*words.length)]);
+            assertEquals(i + 1, bola.getSize());
+        }
+        assertEquals(repetitions, bola.getSize());
     }
 
     @Test
@@ -120,6 +134,40 @@ public class LinkedYarnTests {
         assertEquals(1, ball.getUniqueSize());
         ball.insert("unique");
         assertEquals(2, ball.getUniqueSize());
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        assertEquals(0, bola.getUniqueSize());
+        for(String word : words){
+            bola.insert(word);
+        }
+        assertEquals(words.length, bola.getUniqueSize());
+
+        bola = new LinkedYarn();
+        int repetitions = 100;
+        for (int i = 0; i < repetitions; i ++) {
+            for (String word : words) {
+                bola.insert(word);
+            }
+        }
+        assertEquals(words.length, bola.getUniqueSize());
+
+        for (int i = 0; i < repetitions; i++ ) {
+            bola = new LinkedYarn();
+            for (int j = 0; j < repetitions; j++) {
+                bola.insert(words[(int) (Math.random() * words.length)]);
+            }
+            assertTrue(words.length >= bola.getUniqueSize());
+        }
+
+        bola = new LinkedYarn();
+        for(String word : words) {
+            for (int i = 0; i < (int) (Math.random()*repetitions); i++) {
+                bola.insert(word);
+            }
+        }
+        assertEquals(words.length, bola.getUniqueSize());
+
     }
 
     // LinkedYarn Manipulation Tests
@@ -131,6 +179,36 @@ public class LinkedYarnTests {
         ball.insert("unique");
         assertTrue(ball.contains("dup"));
         assertTrue(ball.contains("unique"));
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        for(String word : words){
+            bola.insert(word);
+            assertTrue(bola.contains(word));
+        }
+
+
+        bola = new LinkedYarn();
+        for (int i = 0; i < repetitions; i ++) {
+            for (String word : words) {
+                bola.insert(word);
+            }
+        }
+        for(String word : words){
+            assertTrue(bola.contains(word));
+            assertFalse(bola.contains(word + "!"));
+        }
+
+        bola = new LinkedYarn();
+        for (int i = 0; i < repetitions; i ++) {
+            bola.insert(words[(int) (Math.random()*words.length)]);
+        }
+        int count = 0;
+        for(String word : words) {
+            count += bola.contains(word) ? 1 : 0;
+        }
+        assertTrue(count <= words.length);
+
     }
 
     @Test
@@ -144,26 +222,31 @@ public class LinkedYarnTests {
         assertEquals(1, ball.getUniqueSize());
         assertEquals(1, dups);
 
-        // My tests
-        LinkedYarn nati = new LinkedYarn();
-        for (int i = 0; i < 10; i ++) {
-            nati.insert(strings[i]);
+        //MY TESTS
+        bola = new LinkedYarn();
+        for(String word : words){
+            bola.insert(word);
+            bola.remove(word);
+            assertFalse(bola.contains(word));
+            assertEquals(0, bola.count(word));
+            assertTrue(bola.isEmpty());
+            assertEquals(0, bola.getUniqueSize());
+            assertEquals(0, bola.getSize());
         }
-        for (int i = 0; i < 10; i ++) {
-            nati.remove(strings[i]);
+
+        for (String word : words) {
+            bola.insert(word);
         }
-        for (int i = 0; i < 10; i ++) {
-            assertFalse(nati.contains(strings[i]));
+        for (int i = 0; i < words.length; i ++) {
+            bola.remove(words[i]);
+            assertEquals(words.length - i -1, bola.getSize());
+            assertEquals(words.length - i -1, bola.getUniqueSize());
         }
-        nati = new LinkedYarn();
-        for (int i = 0; i < 150; i++) {
-            nati.insert(strings[i%20]);
-        }
-        for(int i = 0; i < 20; i ++) {
-            nati.remove(strings[i]);
-        }
-        for(int i = 0; i < 20; i ++) {
-            assertTrue(nati.contains(strings[i]));
+
+        for (String word : words) {
+            bola.remove(word);
+            assertEquals(0, bola.getSize());
+            assertEquals(0, bola.getUniqueSize());
         }
     }
 
@@ -178,27 +261,37 @@ public class LinkedYarnTests {
         assertEquals(1, ball.getSize());
         assertEquals(1, ball.getUniqueSize());
 
-        // My tests
-        LinkedYarn nati = new LinkedYarn();
-        for (int i = 0; i < 10; i ++) {
-            nati.insert(strings[i]);
+        //MY TESTS
+        bola = new LinkedYarn();
+        for(String word : words){
+            for( int i = 0; i < repetitions; i ++) {
+                bola.insert(word);
+            }
+            bola.remove(word);
+            assertTrue(bola.contains(word));
+            assertEquals(repetitions - 1, bola.count(word));
+            assertFalse(bola.isEmpty());
+            assertEquals(1, bola.getUniqueSize());
+            assertEquals(repetitions - 1, bola.getSize());
+            bola.removeAll(word);
+            assertFalse(bola.contains(word));
+            assertEquals(0, bola.count(word));
+            assertTrue(bola.isEmpty());
+            assertEquals(0, bola.getUniqueSize());
+            assertEquals(0, bola.getSize());
         }
-        for (int i = 0; i < 10; i ++) {
-            nati.removeAll(strings[i]);
+
+        for(String word : words) {
+            for (int i = 0; i < (int) (Math.random()*repetitions); i++) {
+                bola.insert(word);
+            }
         }
-        for (int i = 0; i < 10; i ++) {
-            assertFalse(nati.contains(strings[i]));
+        assertEquals(words.length, bola.getUniqueSize());
+        for( int i = 0; i < repetitions; i ++ ){
+            bola.removeAll(words[(int) (Math.random()*words.length)]);
         }
-        nati = new LinkedYarn();
-        for (int i = 0; i < 150; i++) {
-            nati.insert(strings[i%20]);
-        }
-        for(int i = 0; i < 20; i ++) {
-            nati.removeAll(strings[i]);
-        }
-        for(int i = 0; i < 20; i ++) {
-            assertFalse(nati.contains(strings[i]));
-        }
+        assertEquals(0, bola.getUniqueSize());
+        assertEquals(0, bola.getSize());
     }
 
     @Test
@@ -210,14 +303,22 @@ public class LinkedYarnTests {
         assertEquals(1, ball.count("unique"));
         assertEquals(0, ball.count("forneymon"));
 
-        //My test
-
-        LinkedYarn nati= new LinkedYarn();
-        for (int i = 0; i < 100; i++) {
-            nati.insert(strings[i%20]);
-        }
-        for (int i = 0; i < 20; i ++) {
-            assertTrue(nati.count(strings[i]) == 5);
+        //MY TESTS - this one is nice..
+        bola = new LinkedYarn();
+        for(String word : words) {
+            assertEquals(0, bola.count(word));
+            int i = 0;
+            while (i < (int) (Math.random()*repetitions)) {
+                bola.insert(word);
+                i ++;
+            }
+            assertEquals(i, bola.count(word));
+            bola.remove(word);
+            if (i > 0) {
+                assertEquals(i - 1, bola.count(word));
+            }
+            bola.removeAll(word);
+            assertEquals(0, bola.count(word));
         }
     }
 
@@ -230,13 +331,24 @@ public class LinkedYarnTests {
         assertTrue(ball.contains("unique"));
         assertFalse(ball.contains("forneymon"));
 
-        //My test
-        LinkedYarn nati = new LinkedYarn();
-        for (int i = 0; i < 100; i++){
-            nati.insert(strings[i%20]);
-        }
-        for (int i = 0; i < 20; i ++) {
-            assertTrue(nati.contains(strings[i]));
+        //MY TESTS
+        bola = new LinkedYarn();
+        for (String word : words) {
+            assertFalse(bola.contains(word));
+            int i = 0;
+            while (i < (int) (Math.random() * repetitions)) {
+                bola.insert(word);
+                i++;
+            }
+            if (i > 0) {
+                assertTrue(bola.contains(word));
+            }
+            bola.remove(word);
+            if (i > 0) {
+                assertTrue(bola.contains(word));
+            }
+            bola.removeAll(word);
+            assertFalse(bola.contains(word));
         }
     }
     // This is tested pretty much everywhere so...
@@ -253,6 +365,32 @@ public class LinkedYarnTests {
         String mc = ball.getMostCommon();
         assertTrue(mc.equals("dup") || mc.equals("cool"));
 
+        //MY TESTS - very unlikely but it could go bad by chance..
+        bola = new LinkedYarn();
+        int count = 1;
+        for(String word : words){
+            for(int i = 0; i < count; i ++){
+                bola.insert(word);
+            }
+            assertEquals(word, bola.getMostCommon());
+            count ++;
+        }
+        for(int i = 0; i < words.length - 1; i ++){
+            assertEquals(words[words.length - 1], bola.getMostCommon());
+        }
+
+        bola = new LinkedYarn();
+        String mostCommon = null;
+        int maxInsertions = 0;
+        for(String word : words){
+            int insertions = (int) (Math.random()*repetitions);
+            maxInsertions = maxInsertions > insertions ? maxInsertions : insertions;
+            mostCommon = maxInsertions <= insertions ? word : mostCommon;
+            for (int i =0; i < insertions; i ++) {
+                bola.insert(word);
+            }
+            assertEquals(mostCommon, bola.getMostCommon());
+        }
 
     }
 
@@ -267,7 +405,7 @@ public class LinkedYarnTests {
         LinkedYarn.Iterator it = ball.getIterator();
 
         // Test next()
-        LinkedYarn dolly = new LinkedYarn(ball);
+        LinkedYarn dolly =  new LinkedYarn(ball);
         while (true) {
             String gotten = it.getString();
             assertTrue(dolly.contains(gotten));
@@ -278,7 +416,7 @@ public class LinkedYarnTests {
         assertFalse(it.hasNext());
 
         // Test prev()
-        dolly = new LinkedYarn(ball);
+        dolly =  new LinkedYarn(ball);
         while (true) {
             String gotten = it.getString();
             assertTrue(dolly.contains(gotten));
@@ -295,21 +433,51 @@ public class LinkedYarnTests {
 
         ball.insert("c");
         assertFalse(it.isValid());
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        LinkedYarn.Iterator iterator = bola.getIterator();
+        assertFalse(iterator.hasNext());
+        assertFalse(iterator.hasPrev());
+
+        for(String word : words){
+            bola.insert(word);
+        }
+        assertFalse(iterator.isValid());
+        iterator = bola.getIterator();
+        for(int i = 0; i < words.length - 1; i ++){
+            assertTrue(iterator.hasNext());
+            iterator.next();
+        }
+        assertFalse(iterator.hasNext());
+        for(int i = 0; i < words.length - 1; i ++){
+            assertTrue(iterator.hasPrev());
+            iterator.prev();
+        }
+        assertTrue(iterator.isValid());
+        assertFalse(iterator.hasPrev());
+
+        bola = new LinkedYarn();
+        for(int i = 0; i < repetitions; i++){
+            bola.insert(words[(int) (Math.random()*words.length)]);
+        }
+        iterator = bola.getIterator();
+        for(int i = 0; i < repetitions - 1; i ++){
+            assertTrue(iterator.hasNext());
+            assertTrue(iterator.isValid());
+            iterator.next();
+        }
+        assertFalse(iterator.hasNext());
+        for(int i = 0; i < repetitions - 1; i ++){
+            assertTrue(iterator.hasPrev());
+            assertTrue(iterator.isValid());
+            iterator.prev();
+        }
+        assertFalse(iterator.hasPrev());
     }
 
     // Inter-LinkedYarn Tests
     // -------------------------------------------------
-    @Test
-    public void testCopy() {
-        ball.insert("dup");
-        ball.insert("dup");
-        ball.insert("unique");
-        LinkedYarn dolly = new LinkedYarn(ball);
-        assertEquals(2, dolly.count("dup"));
-        assertEquals(1, dolly.count("unique"));
-        dolly.insert("cool");
-        assertFalse(ball.contains("cool"));
-    }
 
     @Test
     public void testSwap() {
@@ -326,6 +494,31 @@ public class LinkedYarnTests {
         assertTrue(y2.contains("dup"));
         assertTrue(y2.contains("unique"));
         assertFalse(y1.contains("dup"));
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        for(int i = 0; i < repetitions; i++){
+            bola.insert(words[(int) (Math.random()*words.length)]);
+        }
+
+        LinkedYarn bola2 = new LinkedYarn();
+        for(int i = 0; i < repetitions; i++){
+            bola2.insert(words[(int) (Math.random()*words.length)]);
+        }
+        assertFalse(LinkedYarn.sameYarn(bola,bola2));
+
+        LinkedYarn bolaClone =  new LinkedYarn(bola);
+        LinkedYarn bola2Clone =  new LinkedYarn(bola2);
+
+
+        assertFalse(LinkedYarn.sameYarn(bola,bola2Clone));
+        assertFalse(LinkedYarn.sameYarn(bola2,bolaClone));
+        bola.swap(bola2);
+        assertFalse(LinkedYarn.sameYarn(bola,bola2));
+        assertFalse(LinkedYarn.sameYarn(bolaClone,bola2Clone));
+
+        assertTrue(LinkedYarn.sameYarn(bola,bola2Clone));
+        assertTrue(LinkedYarn.sameYarn(bola2,bolaClone));
     }
 
     // Static Method Tests
@@ -346,6 +539,21 @@ public class LinkedYarnTests {
         y3.insert("test");
         assertFalse(y1.contains("test"));
         assertFalse(y2.contains("test"));
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        LinkedYarn bola2 = new LinkedYarn();
+
+        for(int i = 0; i < repetitions; i++){
+            bola.insert(words[(int) (Math.random()*words.length)]);
+            bola2.insert(words[(int) (Math.random()*words.length)]);
+        }
+
+        LinkedYarn bola3 = LinkedYarn.knit(bola, bola2);
+        for (String word : words){
+            assertEquals(bola.count(word) + bola2.count(word), bola3.count(word));
+        }
+
     }
 
     @Test
@@ -364,6 +572,26 @@ public class LinkedYarnTests {
         y3.insert("test");
         assertFalse(y1.contains("test"));
         assertFalse(y2.contains("test"));
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        LinkedYarn bola2 = new LinkedYarn();
+
+        for(int i = 0; i < repetitions; i++){
+            bola.insert(words[(int) (Math.random()*words.length)]);
+            bola2.insert(words[(int) (Math.random()*words.length)]);
+        }
+
+        LinkedYarn bola3 = LinkedYarn.tear(bola, bola2);
+        for (String word : words){
+            int diff = Math.max( 0, bola.count(word) - bola2.count(word) );
+            assertEquals(diff, bola3.count(word));
+        }
+
+        bola = new LinkedYarn();
+        bola2 = new LinkedYarn();
+        bola3 = LinkedYarn.tear(bola, bola2);
+        assertTrue(bola3.isEmpty());
     }
 
     @Test
@@ -380,6 +608,24 @@ public class LinkedYarnTests {
         assertTrue(LinkedYarn.sameYarn(y2, y1));
         y2.insert("test");
         assertFalse(LinkedYarn.sameYarn(y1, y2));
+
+        //MY TESTS
+        bola = new LinkedYarn();
+        LinkedYarn bola2 = new LinkedYarn();
+        assertTrue(LinkedYarn.sameYarn(bola, bola2));
+
+        for (String word : words){
+            int index = (int) (Math.random()*words.length);
+            bola.insert(words[index]);
+            bola2.insert(words[index]);
+        }
+        assertTrue(LinkedYarn.sameYarn(bola, bola2));
+
+        for (String word : words){
+            int index = (int) (Math.random()*words.length/2);
+            bola.remove(words[index]);
+            bola2.remove(words[index]);
+        }
     }
 
 }
