@@ -1,9 +1,5 @@
 import java.util.NoSuchElementException;
 
-/**
- *  A LinkedYarn is an unordered collection of Strings in which duplicates are allowed.
- *  A LinkedYarn maps Strings to the number of occurrences of each String in the LinkedYarn.
- */
 public class LinkedYarn implements LinkedYarnInterface {
 
     // -----------------------------------------------------------
@@ -42,30 +38,18 @@ public class LinkedYarn implements LinkedYarnInterface {
     // -----------------------------------------------------------
     // Methods
     // -----------------------------------------------------------
-    /**
-     * @return true if LinkedYarn is empty
-     */
     public boolean isEmpty () {
-        return head == null;
+        return size == 0;
     }
 
-    /**
-     * @return size
-     */
     public int getSize () {
         return size;
     }
 
-    /**
-     * @return uniqueSize
-     */
     public int getUniqueSize () {
         return uniqueSize;
     }
 
-    /**
-     * @param toAdd String to be added to the LinkedYarn.
-     */
     public void insert (String toAdd) {
 
         if (this.contains(toAdd)) {
@@ -83,10 +67,6 @@ public class LinkedYarn implements LinkedYarnInterface {
         modCount ++;
     }
 
-    /**
-     * @param toRemove String to be removed from the LinkedYarn (only one occurrance)
-     * @return the number of occurrences remaining after removal, (0 if toRemove does not exist in LinkedYarn)
-     */
     public int remove (String toRemove) {
 
         Node nodeToRemoveFrom = find(toRemove);
@@ -102,11 +82,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         return 0;
     }
 
-    /**
-     * @param toNuke String to be removed from the LinkedYarn (all occurrances)
-     */
     public void removeAll (String toNuke) {
-
         Node nodeToNuke = find(toNuke);
         size -= nodeToNuke.count;
         if (nodeToNuke == null) {return;}
@@ -118,21 +94,12 @@ public class LinkedYarn implements LinkedYarnInterface {
         modCount++;
     }
 
-    /**
-     * @param toCount String to which the number of occurrances we want to know
-     * @return the number of occurrences of toCount in LinkedYarn
-     */
     public int count (String toCount) {
-
         Node nodeToCount = find(toCount);
         if (nodeToCount == null) { return 0; }
         return nodeToCount.count;
     }
 
-    /**
-     * @param toCheck String to which we want to check its occurrance in the LinkedYarn
-     * @return true if the String toCheck appears at least once inside of the LinkedYarn.
-     */
     public boolean contains (String toCheck) {
 
         if ( this.isEmpty() ) { return false; }
@@ -143,10 +110,6 @@ public class LinkedYarn implements LinkedYarnInterface {
         return iterator.getString().equals(toCheck);
     }
 
-    /**
-     * @return the String that occurs most frequently in the LinkedYarn (if it is a tie
-     * return *either* of the most frequent. If the LinkedYarn is empty return null.
-     */
     public String getMostCommon () {
 
         String mostCommon = head.text;
@@ -162,11 +125,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         return mostCommon;
     }
 
-    /**
-     * @param other LinkedYarn to swap
-    */
     public void swap (LinkedYarn other) {
-
         Node tempHead = head;
         int tempSize = size,
             tempUniqueSize = uniqueSize,
@@ -192,12 +151,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     // Static methods
     // -----------------------------------------------------------
 
-    /**
-     * @param y1,y2 LinkedYarns that you want to knit (put together into one LinkedYarn)
-     * @return knitted LinkedYarn (y1 together with y2)
-     */
     public static LinkedYarn knit (LinkedYarn y1, LinkedYarn y2) {
-
         LinkedYarn result = new LinkedYarn(y1);
         Node current = y2.head;
         for (int i = 0; i < y2.uniqueSize; i++) {
@@ -207,12 +161,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         return result;
     }
 
-    /**
-     * @param y1,y2 LinkedYarns that you want to tear (put y1 together with y2 except for elements of y2 that are in y1 alredy)
-     * @return teared LinkedYarn
-     */
     public static LinkedYarn tear (LinkedYarn y1, LinkedYarn y2) {
-
         LinkedYarn result = new LinkedYarn(y1);
         Node current = y2.head;
         for (int i = 0; i < y2.uniqueSize; i++) {
@@ -222,10 +171,6 @@ public class LinkedYarn implements LinkedYarnInterface {
         return result;
     }
 
-    /**
-     * @param y1,y2 two LinkedYarns
-     * @return true if y1 and y2 contain the exact same unique Strings and String occurrences
-     */
     public static boolean sameYarn (LinkedYarn y1, LinkedYarn y2) {
         return tear(y1, y2).isEmpty() && tear(y2, y1).isEmpty();
     }
@@ -248,27 +193,46 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     private void insertOccurrences (String text, int countNumber) {
-
         for (int i = 0; i < countNumber; i++) {
             this.insert(text);
         }
     }
 
     private void removeOccurrences (String text, int countNumber) {
-
         for (int i = 0; i < countNumber; i++) {
             this.remove(text);
         }
     }
 
     private void insertNode (String textToAdd, int countToAdd) {
-
         Node currentHead = head;
         head = new Node(textToAdd, countToAdd);
         head.next = currentHead;
         size += countToAdd;
         uniqueSize++;
         modCount += countToAdd;
+    }
+
+    @Override
+    public String toString(){
+        if (this.isEmpty()) {
+            return "{ }";
+        } else {
+            Iterator iterator = this.getIterator();
+            String toPrint = "{ ";
+            toPrint += iterator.getString();
+            toPrint += ": ";
+            toPrint += this.count(iterator.getString());
+            while (iterator.hasNext()) {
+                iterator.next();
+                toPrint += ", ";
+                toPrint += iterator.getString();
+                toPrint += ": ";
+                toPrint += this.count(iterator.getString());
+            }
+            toPrint += " }";
+            return toPrint;
+        }
     }
 
     // -----------------------------------------------------------
@@ -308,7 +272,6 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public void next () {
-
             if (isValid()) {
                 if (hasNext()) {
                     if (index == current.count) {
@@ -327,7 +290,6 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public void prev () {
-
             if (isValid()) {
                 if (hasPrev()) {
                     if (index == 1) {
@@ -346,7 +308,6 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public void replaceAll (String toReplaceWith) {
-
             if (isValid()) {
                 current.text = toReplaceWith;
                 itModCount ++;
