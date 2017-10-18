@@ -51,7 +51,6 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public void insert (String toAdd) {
-
         if (this.contains(toAdd)) {
             find(toAdd).count ++;
             size ++;
@@ -68,26 +67,25 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public int remove (String toRemove) {
-
         Node nodeToRemoveFrom = find(toRemove);
-        if ( nodeToRemoveFrom == null) { return 0;}
+        if ( nodeToRemoveFrom == null) {return 0;}
         if (nodeToRemoveFrom.count == 1) {
             removeAll(toRemove);
         } else {
             size --;
-            nodeToRemoveFrom.count--;
+            nodeToRemoveFrom.count --;
             return nodeToRemoveFrom.count;
             }
-        modCount++;
+        modCount ++;
         return 0;
     }
 
     public void removeAll (String toNuke) {
-        if (!this.contains(toNuke)) { return; }
+        if (!this.contains(toNuke)) {return;}
         Node nodeToNuke = find(toNuke);
         size -= nodeToNuke.count;
-        uniqueSize--;
-        modCount++;
+        uniqueSize --;
+        modCount ++;
         if (nodeToNuke == null) {return;}
         if (nodeToNuke == head) { head = nodeToNuke.next; }
         if (nodeToNuke.prev != null) {
@@ -96,13 +94,11 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public int count (String toCount) {
-
-        if (!this.contains(toCount)) { return 0; }
+        if (!this.contains(toCount)) {return 0;}
         return find(toCount).count;
     }
 
     public boolean contains (String toCheck) {
-
         if (this.isEmpty()) { return false; }
         Iterator iterator = getIterator();
         while (!iterator.getString().equals(toCheck) && iterator.hasNext()) {
@@ -112,8 +108,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     }
 
     public String getMostCommon () {
-
-        if (size == 0) { return null; }
+        if (size == 0) {return null;}
         Node mostCommon = head;
         Iterator iterator = getIterator();
         while (iterator.hasNext()) {
@@ -179,10 +174,7 @@ public class LinkedYarn implements LinkedYarnInterface {
     // -----------------------------------------------------------
 
     private Node find(String word) {
-        //Returns the Node that contains that text
-        //Or null if it could not find it
-        if (!this.contains(word)) { return null; }
-
+        if (!this.contains(word)) {return null;}
         Iterator iterator = this.getIterator();
         while (!iterator.getString().equals(word) && iterator.hasNext()) {
             iterator.next();
@@ -241,8 +233,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         LinkedYarn owner;
         Node current;
         int itModCount;
-        //index designates the position inside the node (1 being 1st occurrence)
-        private int index;
+        private int index; // designates the position inside each node (1 being 1st occurrance)
 
         Iterator (LinkedYarn y) {
             owner = y;
@@ -252,7 +243,7 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public boolean hasNext () {
-            if (owner.isEmpty()) { return false; }
+            if (owner.isEmpty()) {return false;}
             return index < current.count || current.next != null;
         }
 
@@ -270,43 +261,28 @@ public class LinkedYarn implements LinkedYarnInterface {
         }
 
         public void next () {
-            if (isValid()) {
-                if (hasNext()) {
-                    if (index == current.count) {
-                        if (!this.hasNext()) { throw new NoSuchElementException(); }
-                        current = current.next;
-                        index = 1;
-                    } else {
-                        index++;
-                    }
+            if (!isValid()) {throw new IllegalStateException();}
+            if (!hasNext()) {throw new NoSuchElementException();}
+                if (index == current.count) {
+                    current = current.next;
+                    index = 1;
                 } else {
-                    throw new NoSuchElementException();
+                    index++;
                 }
-            } else {
-                throw new IllegalStateException();
-            }
         }
 
         public void prev () {
-            if (isValid()) {
-                if (hasPrev()) {
-                    if (index == 1) {
-                        if (!this.hasPrev()) { throw new NoSuchElementException(); } //might need to do and if its not empty
-                        current = current.prev;
-                        index = current.count;
-                    } else {
-                        index --;
-                    }
-                } else {
-                    throw new NoSuchElementException();
-                }
+            if (!isValid()) {throw new IllegalStateException();}
+            if (!hasPrev()) {throw new NoSuchElementException();}
+            if (index == 1) {
+                current = current.prev;
+                index = current.count;
             } else {
-                throw new IllegalStateException();
+                index --;
             }
         }
 
         public void replaceAll (String toReplaceWith) {
-
             if (isValid()) {
                 current.text = toReplaceWith;
                 itModCount ++;
