@@ -51,7 +51,48 @@ class BinaryHeap {
     }
 
     public ArrayList<Integer> getSortedElements () {
-        throw new UnsupportedOperationException();
+
+        ArrayList<Integer> sortedHeap = this.heap.clone();
+        if (sortedHeap.size() == 1) { return sortedHeap; }
+        for (int i = sortedHeap.size() - 1; i > 1; i --){
+            swap(sortedHeap, 0, i);
+            sortedHeap = heapify(sortedHeap, 0, i-1);
+        }
+        swap(sortedHeap, 0, 1);
+        return sortedHeap;
+    }
+
+
+    private void swap(ArrayList<Integer> aList, int i, int j){
+        Integer temp = aList.get(i);
+        aList.set( i, aList.get(j) );
+        aList.set( j, temp);
+    }
+
+    private boolean inHeap(ArrayList<Integer> heap, int i){
+        return i >= 0 && i < heap.size();
+    }
+
+    private ArrayList<Integer> heapify(ArrayList<Integer> heap, int i){
+
+        int l = getChild(i, 'L');
+        int r = getChild(i, 'R');
+
+        if( inHeap(heap, r) ){
+            if( heap.get(i) > heap.get(l) && heap.get(i) > heap.get(r)){ return heap; }
+            if ( heap.get(l) > heap.get(r) ){
+                swap(heap, l, i);
+                heapify(heap, l);
+            } else {
+                swap(heap, r, i);
+                heapify(heap, r);
+            }
+        } else if( inHeap(heap, l) ){
+            if( heap.get(i) < heap.get(l) ){
+                swap(heap, l, i);
+            }
+        }
+        return heap;
     }
 
 }

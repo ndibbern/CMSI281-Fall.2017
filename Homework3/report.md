@@ -193,6 +193,8 @@ public void swap (LinkedYarn other) {
 
 $T(u,s)=C1+C2+C3+C4+C5+C6+C7+C8+C9+C10+C11$
 
+###### ANSWER
+
 $ \implies O(1)$ 
 
 ## Problem 3
@@ -223,7 +225,7 @@ $T(u1,u2,s1,s2) =u1(C1 + C2+C3) \implies O(u1)$
     }
 ```
 
-$T(u1,u2,s1,s2) = u1+ (u2u1)+C1 = u1^2 + u1u2+C1 \implies O(u1u2) $ 
+$T(u1,u2,s1,s2) = u1+ (u2u1)+C1 = u1 + u1u2+C1 \implies O(u1u2) $ 
 
 ### 2
 
