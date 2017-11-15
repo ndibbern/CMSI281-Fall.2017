@@ -21,7 +21,7 @@ public class Autocompleter implements AutocompleterInterface {
     // -----------------------------------------------------------
 
     public boolean isEmpty () {
-        throw new UnsupportedOperationException();
+        return root == null;
     }
 
     public void addTerm (String toAdd) {
