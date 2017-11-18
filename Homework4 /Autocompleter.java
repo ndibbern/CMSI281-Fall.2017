@@ -30,7 +30,7 @@ public class Autocompleter implements AutocompleterInterface {
     }
 
     public boolean hasTerm (String query) {
-        throw new UnsupportedOperationException();
+        return hasTerm(root, normalizeTerm(query), 0);
     }
 
     public String getSuggestedTerm (String query) {
@@ -66,13 +66,8 @@ public class Autocompleter implements AutocompleterInterface {
 
     // [!] Add your own helper methods here!
 
-    private static boolean indexIsValid (int index, String word) {
-        return  index < word.length() - 1;
-    }
-
     private TTNode addTerm (String toAdd, TTNode node, int index) {
         char[] lettersInWord = toAdd.toCharArray();
-
         //Base case
         if (node == null) {node = new TTNode(lettersInWord[index], false);}
 
@@ -83,13 +78,34 @@ public class Autocompleter implements AutocompleterInterface {
         } else if (position > 0) {
             node.right = addTerm(toAdd, node.right, index);
         } else {
-            if (indexIsValid(index, toAdd)) {
+            if (index < lettersInWord.length - 1) {
                 node.mid = addTerm(toAdd, node.mid, index + 1);
             } else {
                 node.wordEnd = true;
             }
         }
         return node;
+    }
+
+    private boolean hasTerm (TTNode node, String query, int index) {
+        char[] queryLetters = query.toCharArray();
+
+        //Base case
+        if (node == null) { return false; }
+
+        //Recursion
+        int position = compareChars(queryLetters[index], node.letter);
+        if (position < 0) {
+            return hasTerm(node.left, query, index);
+        } else if (position > 0) {
+            return hasTerm(node.right, query, index);
+        } else {
+            if (index + 1 == queryLetters.length) {
+                return node.wordEnd;
+            } else {
+                return hasTerm(node.mid, query, index + 1);
+            }
+        }
     }
 
 
