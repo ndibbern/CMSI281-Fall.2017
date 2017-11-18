@@ -6,6 +6,7 @@ public class Autocompleter implements AutocompleterInterface {
     // Fields
     // -----------------------------------------------------------
     TTNode root;
+    private ArrayList<String> terms;
 
 
     // -----------------------------------------------------------
@@ -25,7 +26,7 @@ public class Autocompleter implements AutocompleterInterface {
     }
 
     public void addTerm (String toAdd) {
-        throw new UnsupportedOperationException();
+        addTerm(normalizeTerm(toAdd), root, 0);
     }
 
     public boolean hasTerm (String query) {
@@ -64,6 +65,32 @@ public class Autocompleter implements AutocompleterInterface {
     }
 
     // [!] Add your own helper methods here!
+
+    private static boolean indexIsValid (int index, String word) {
+        return  index < word.length() - 1;
+    }
+
+    private TTNode addTerm (String toAdd, TTNode node, int index) {
+        char[] lettersInWord = toAdd.toCharArray();
+
+        //Base case
+        if (node == null) {node = new TTNode(lettersInWord[index], false);}
+
+        //Recursion
+        int position = compareChars(lettersInWord[index], node.letter);
+        if (position < 0) {
+            node.left = addTerm(toAdd, node.left, index);
+        } else if (position > 0) {
+            node.right = addTerm(toAdd, node.right, index);
+        } else {
+            if (indexIsValid(index, toAdd)) {
+                node.mid = addTerm(toAdd, node.mid, index + 1);
+            } else {
+                node.wordEnd = true;
+            }
+        }
+        return node;
+    }
 
 
     // -----------------------------------------------------------
