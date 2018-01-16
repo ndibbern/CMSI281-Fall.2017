@@ -6,9 +6,7 @@ public class Autocompleter implements AutocompleterInterface {
     // Fields
     // -----------------------------------------------------------
     TTNode root;
-    private ArrayList<String> terms;
-
-
+    private ArrayList<String> terms; 
     // -----------------------------------------------------------
     // Constructor
     // -----------------------------------------------------------
@@ -34,11 +32,13 @@ public class Autocompleter implements AutocompleterInterface {
     }
 
     public String getSuggestedTerm (String query) {
-        throw new UnsupportedOperationException();
+        return getSuggestedTerm(root, normalizeTerm(query), 0);
     }
 
     public ArrayList<String> getSortedTerms () {
-        throw new UnsupportedOperationException();
+        terms = new ArrayList<>();
+        getSortedTerms(root, "");
+        return terms;
     }
 
 
@@ -87,11 +87,11 @@ public class Autocompleter implements AutocompleterInterface {
         return node;
     }
 
-    private boolean hasTerm (TTNode node, String query, int index) {
+    private boolean hasTerm(TTNode node, String query, int index) {
         char[] queryLetters = query.toCharArray();
 
         //Base case
-        if (node == null) { return false; }
+        if (node == null) {return false;}
 
         //Recursion
         int position = compareChars(queryLetters[index], node.letter);
@@ -106,6 +106,51 @@ public class Autocompleter implements AutocompleterInterface {
                 return hasTerm(node.mid, query, index + 1);
             }
         }
+    }
+
+    private String getEnding(TTNode node) {
+        if (node == null) {return null;}
+        String ending = String.valueOf(node.letter);
+        return node.wordEnd ? ending : ending + getEnding(node.mid);
+    }
+
+    private String getSuggestedTerm(TTNode node, String query, int index) {
+        char[] queryLetters = query.toCharArray();
+
+        //Base case
+        if (node == null) {return null;}
+
+        //Recursion
+        int position = compareChars(queryLetters[index], node.letter);
+        if (position < 0) {
+            return getSuggestedTerm(node.left, query, index);
+        } else if (position > 0) {
+            return getSuggestedTerm(node.right, query, index);
+        } else {
+            if (index + 1 == queryLetters.length) {
+                return trimLast(query) + getEnding(node);
+            } else {
+                return getSuggestedTerm(node.mid, query, index + 1);
+            }
+        }
+    }
+
+    private String trimLast(String toTrim) {
+        return toTrim.substring(0, toTrim.length() -1);
+    }
+
+    private void getSortedTerms(TTNode node, String prefix) {
+        //Base case
+        if (node == null) {return;}
+
+        //Recursion
+        getSortedTerms(node.left, prefix);
+        prefix += node.letter;
+        if (node.wordEnd) {terms.add(prefix);}
+        getSortedTerms(node.mid, prefix);
+        prefix = trimLast(prefix);
+        getSortedTerms(node.right, prefix);
+
     }
 
 
